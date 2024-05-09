@@ -1,0 +1,17 @@
+{% extends 'menu/base.html' %}
+
+{% block title_name %}
+Авторизация
+{% endblock %}
+
+{% block content %}
+{%if form.errors %}
+<h3>Неверный логин или пароль!</h3>
+{% endif %}
+
+<form method="post" action="{% url 'user:login' %}">
+    {% csrf_token %}
+    {{form.as_p}}
+    <button name='submit'>Авторизация</button>
+</form>
+{% endblock content %}
