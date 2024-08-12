@@ -6,6 +6,22 @@
 
 {% block content %}
 <h1>Профиль пользователя</h1>
-<p>Имя пользователя {{ user.username }}</p>
-<p>Почта: -----</p>
+<p>Никнейм: {{ user.username }}</p>
+{% if user.first_name %}
+<p>Имя: {{ user.first_name }}</p>
+{% endif %}
+
+{% if user.last_name %}
+<p>Фамилия: {{ user.last_name }}</p>
+
+{% endif %}
+<p>Номер телефона: {{ user.phone_number }}</p>
+{% if user.email %}
+<p>Почта: {{ user.email }}</p>
+
+{% endif %}
+<p>Был(а) в сети: {{ user.last_login }}</p>
+<p>Дата регистрации: {{ user.date_joined }}</p>
+<p><a href="{% url 'user:profile_change' user.id %}">Изменить данные</a></p>
+<a href="{% url 'user:profile_change_password' user.id %}">Изменить пароль</a>
 {% endblock %}

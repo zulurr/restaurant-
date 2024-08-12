@@ -1,0 +1,16 @@
+{% extends 'menu/base.html' %}
+
+{% block title_name %}
+Изменение данных
+{% endblock %}
+
+{% block content %}
+<h1>Поля не должны быть пустыми!!!</h1>
+<form method="post" action="{% url 'user:profile_change' user.id %}">
+    {% csrf_token %}
+    <p>{{ form }}</p>
+    <button name="submit">Сохранить данные</button>
+
+</form>
+{% endblock content %}
+

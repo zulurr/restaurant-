@@ -1,10 +1,12 @@
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
 # from restaurant.user.forms import UserLoginForm, UserCreationForm
 
 
-from .forms import UserCreationForm, UserLoginForm
+from .forms import UserCreationForm, UserLoginForm, UserProfileChangeForm, CustomPasswordChangeForm
+from .models import User
 
 
 def login_view(request):
@@ -38,3 +40,38 @@ def register_view(request):
 def logout_view(request):
     logout(request)
     return redirect('menu:main')
+
+def profile_view(request, user_id):
+    user = User.objects.get(id=user_id)
+    return render(request, 'user/profile.html', {'user': user})
+
+def profile_change(request, user_id):
+    user = User.objects.get(id=user_id)
+    if request.method != 'POST':
+        form = UserProfileChangeForm()
+        form.fields['username'].initial = user.username
+        form.fields['phone_number'].initial = user.phone_number
+        form.fields['email'].initial = user.email
+    else:
+        form = UserProfileChangeForm(data=request.POST)
+        if form.is_valid():
+            user.username = form.cleaned_data['username']
+            user.phone_number = form.cleaned_data['phone_number']
+            user.email = form.cleaned_data['email']
+            user.save()
+            return redirect('user:profile', user_id=user_id)
+    return render(request, 'user/profile_change.html', {'form': form})
+
+def profile_change_password(request, user_id):
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = request.user
+            user.set_password(form.cleaned_data['new_password1'])
+            user.save()
+            update_session_auth_hash(request, user)
+            return redirect('user:profile', user_id=user_id)
+    else:
+        form = CustomPasswordChangeForm(user=request.user)
+
+    return render(request, 'user/profile_change_password.html', {'form': form})

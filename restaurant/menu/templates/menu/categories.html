@@ -1,0 +1,13 @@
+{% extends 'menu/base.html' %}
+
+{% block title_name %}
+Категории
+{% endblock %}
+
+{% block content %}
+<img src="https://www.afisha.ru/uploads/images/c/a9/ca9d9e49b8d748d8bb8cf07330a95777.jpg" class="img-responsive" width="500" height="500">
+{% for category in categories %}
+<p><a href="{% url 'menu:category' category.id %}">{{category.name_category}}<br><br></a></p>
+{% endfor %}
+
+{% endblock content%}

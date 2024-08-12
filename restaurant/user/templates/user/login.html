@@ -12,6 +12,7 @@
 <form method="post" action="{% url 'user:login' %}">
     {% csrf_token %}
     {{form.as_p}}
-    <button name='submit'>Авторизация</button>
+    <input type='submit' class="btn btn-primary" value="Войти">
+
 </form>
 {% endblock content %}

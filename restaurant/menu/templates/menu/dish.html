@@ -1,0 +1,9 @@
+{% extends 'menu/base.html' %}
+
+{% block title_name %} {{dish.dish_name}}{% endblock%}
+
+{% block content %}
+<h1>Название: {{dish.dish_name}}</h1>
+<p>Описание: {{dish.dish_description}}</p>
+<p>Цена: {{dish.price}}</p>
+{% endblock %}

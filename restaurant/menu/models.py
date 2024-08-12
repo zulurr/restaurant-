@@ -11,11 +11,19 @@ class Menu(models.Model):
     def __str__(self):
         return self.dish_name
 
+    class Meta:
+        verbose_name = 'Меню'
+        verbose_name_plural = 'Меню'
+
 class Category(models.Model):
     name_category = models.CharField(max_length=40)
 
     def __str__(self):
         return self.name_category
+
+    class Meta:
+        verbose_name = 'Категории'
+        verbose_name_plural = 'Категории'
 
 
 
