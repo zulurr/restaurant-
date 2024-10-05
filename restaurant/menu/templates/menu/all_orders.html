@@ -1,0 +1,34 @@
+{% extends 'menu/base.html' %}
+
+{% block title_name %}
+Заказы
+{% endblock %}
+
+{% block content %}
+<br>
+<form method="get">
+    <select name="sort" onchange="this.form.submit()">
+        <option value="pk">Сортировать по первичному ключу</option>
+        <option value="created_at_date">Сортировать по дате заказа</option>
+        <option value="sum_order">Сортировать по сумме заказа</option>
+    </select>
+</form>
+
+<br>
+<a href="?sort=pk">Сортировать по первичному ключу</a>
+<a href="?sort=created_at_date">Сортировать по дате заказа</a>
+<a href="?sort=sum_order">Сортировать по сумме заказа</a>
+<br>
+{% for dish in result_all_orders %}
+
+<br><p>Номер заказа: {{ dish.id }}</p>
+<p>Дата заказа: {{ dish.created_at_date }}</p>
+<p>Сумма заказа: {{ dish.sum_order }}</p>
+{% endfor %}
+
+
+<br><br><br>
+{{ res}}
+<br><br><br>
+
+{% endblock %}

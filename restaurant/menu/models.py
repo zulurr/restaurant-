@@ -25,6 +25,40 @@ class Category(models.Model):
         verbose_name = 'Категории'
         verbose_name_plural = 'Категории'
 
+class SumOrder(models.Model):
+    created_at_date = models.DateField(auto_now=True)
+    created_at_time = models.TimeField(auto_now=True)
+    sum_order = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
+    def __str__(self):
+        return f'{self.created_at_date}'
+
+class SumDish(models.Model):
+    order = models.ForeignKey(SumOrder, on_delete=models.CASCADE)
+    menu_item = models.ForeignKey(Menu, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    total_sum = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    def save(self, *args, **kwargs):
+        self.total_sum = self.quantity * self.menu_item.price
+        super().save(*args, **kwargs)
+        self.update_sum_order()
+
+    def delete(self, *args, **kwargs):
+        order_sum = self.total_sum
+        super().delete(*args, **kwargs)
+        self.update_sum_order(-order_sum*2)
+
+
+    def update_sum_order(self, adj=0):
+        order = self.order
+        current_sum = order.sum_order
+        new_sum = current_sum + self.total_sum + adj
+        order.sum_order = new_sum
+        order.save()
+
+
+    def __str__(self):
+        return f'Заказ № {self.order.id}'
 
 

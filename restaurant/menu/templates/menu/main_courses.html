@@ -3,44 +3,9 @@
 {% block title_name %} {% endblock%}
 
 {% block content %}
-<h1>Горячие блюда</h1> <br>
-<h3>Пиде с сыром</h3> <br>
-<img src="https://avatars.dzeninfra.ru/get-zen_doc/2377661/pub_5ec67dae3f95587082216b64_5ec67db15bdd272313d6ea8e/scale_1200" alt=""> <br> <br>
-Описание: Cыр моцарелла в лодочке из теста. <br>
-Цена: 820 <br> <br> <br>
-
-<h3>Пиде с фаршем</h3> <br>
-<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQfH-YVnL8z9TgcOONbWXP_4OXWiOC15nHrw&s" alt=""> <br> <br>
-Описание: Фарш с восточными специями в лодочке из теста. <br>
-Цена: 850 <br> <br> <br>
-
-<h3>Пиде с говядиной и сыром</h3>
-<img src="https://cdn2.red-media.ru/wp-content/uploads/2024/05/Retsept_1280h720_0005_Blyudo-4.png" alt=""> <br> <br>
-Описание: Рубленая говядина, турецкий сыр, болгарский перец, помидор, лук, чеснок в лодочке из теста. <br>
-Цена: 1050 <br> <br> <br>
-
-<h3>Лахмаджун с говядиной</h3>
-<img src="https://abrikosvl.ru/files/products/lahmajun.800x600w.jpg" alt=""> <br> <br>
-Описание: тонкая хрустящая лепешка, покрытая сочным говяжьим фаршем. <br>
-Цена: 750 <br> <br> <br>
-
-<h3>Донер в хлебе</h3>
-<img src="https://img.freepik.com/free-photo/meat-doner-bread-wooden-board_140725-2425.jpg" alt=""> <br> <br>
-Описание: Тонко нарезанное мясо говядины с курдючным жиром в особом хлебе. Подаётся с картофелем фри и острыми маринованными турецкими перчиками. <br>
-Цена: 850  <br> <br> <br>
-
-<h3>Донер в лаваше</h3>
-<img src="https://n1s1.hsmedia.ru/3c/dc/e9/3cdce98972d303d894d358dd2d7c99b2/600x600_1_4648ca4fc99af15851f05e82573d9606@1200x1200_0xxfj54Yu3_8163172447602658436.png" alt=""> <br> <br>
-Описание: Тонко нарезанное мясо говядины с курдючным жиром в тонком хрустящем лаваше. Подаётся с картофелем фри и острыми маринованными турецкими перчиками. <br>
-Цена: 850 <br> <br> <br>
-
-<h3>Кёфте из ягнёнка</h3>
-<img src="https://i0.wp.com/antennadaily.ru/wp-content/uploads/2020/02/FullSizeRender-scaled.jpeg?resize=1120%2C747" alt=""> <br> <br>
-Описание: Турецкие котлеты кёфте из мяса ягнёнка. <br>
-Цена: 850 <br> <br> <br>
-
-<h3>Урфа кебаб</h3>
-<img src="https://media-cdn.tripadvisor.com/media/photo-s/18/82/31/62/urfa-kebab.jpg" alt=""> <br> <br>
-Описание: Традиционный турецкий кебаб из рубленого мяса ягнёнка. Готовится на углях. Подаётся с рисом и овощами на гриле. <br>
-Цена: 1250  <br> <br> <br>
+{% for i in mc %}
+<h1>{{i.dish_name}}</h1>
+<p>Описание: {{i.dish_description}}</p>
+<p>Цена: {{i.price}}</p><br>
+{% endfor %}
 {% endblock %}

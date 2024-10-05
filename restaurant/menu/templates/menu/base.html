@@ -35,11 +35,15 @@
       <li><a href="{% url 'menu:soups' %}">Супы</a></li>
        <li><a href="{% url 'menu:desserts' %}">Десерты</a></li>
         <li><a href="{% url 'menu:beverages' %}">Напитки</a></li>
+          <li><a href="{% url 'menu:random_dish' %}">Случайное блюдо</a></li>
+           <li><a href="{% url 'menu:top_5' %}"> Топ-5 блюд</a></li>
+
     </ul>
   </div>
        <li class="nav-item">
                 <a class="nav-link" href="{% url 'menu:information' %}">Контакты</a>
             </li>
+
         </ul>
         <ul class="navbar-nav ml auto">
             {% if user.is_authenticated %}
@@ -52,11 +56,25 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'user:login' %}">Вход</a>
 
+
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'user:register' %}">Регистрация</a>
             </li>
             {% endif %}
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'menu:all_dishes' %}">Блюда</a>
+             </li>
+
+             {% if user.is_staff == 1 %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'menu:all_orders' %}">Заказы</a>
+             </li>
+
+
+                {% endif%}
+
         </ul>
     </div>
 </nav>

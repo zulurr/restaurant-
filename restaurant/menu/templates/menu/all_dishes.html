@@ -1,0 +1,34 @@
+{% extends 'menu/base.html' %}
+
+{% block title_name %}
+Блюда
+{% endblock %}
+
+{% block content %}
+<br>
+<form method="get">
+    <select name="sort" onchange="this.form.submit()">
+        <option value="pk">Сортировать по первичному ключу</option>
+        <option value="dish_name">Сортировать по названию блюда</option>
+        <option value="price">Сортировать по стоимости</option>
+    </select>
+</form>
+
+<br>
+<a href="?sort=pk">Сортировать по первичному ключу</a>
+<a href="?sort=dish_name">Сортировать по названию блюда</a>
+<a href="?sort=price">Сортировать по стоимости</a>
+<br>
+{% for dish in result_all_dishes %}
+
+<br><p>Название блюда: {{ dish.dish_name }}</p>
+<p>Описание блюда: {{ dish.dish_description }}</p>
+<p>Цена блюда: {{ dish.price }}</p>
+{% endfor %}
+
+
+<br><br><br>
+{{ res}}
+<br><br><br>
+
+{% endblock %}

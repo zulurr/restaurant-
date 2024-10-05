@@ -1,12 +1,12 @@
 {% extends 'menu/base.html' %}
 
-{% block title_name %} Традиционный турецкий завтрак {% endblock%}
+{% block title_name %} Завтраки {% endblock%}
 
 {% block content %}
-<h1>Традиционный турецкий завтрак </h1><br>
-<img src="https://assets2.resto.ru/uploads/news/image/2011223/feed__.jpg" class="img-responsive"> <br> <br>
-Описание: Яичница с суджуком, пиде с зеленью и сыром, сыр творожный, сыр тулум,
-огурцы бакинские, томаты, оливки гигантские, маслины вяленые, масло сливочное с медом. <br>
-Цена: 1600 <br>
+{% for breakfast in bf %}
+<h1>{{breakfast.dish_name}}</h1>
+<p>Описание: {{breakfast.dish_description}}</p>
+<p>Цена: {{breakfast.price}}</p><br>
 
-{% endblock %}
+{% endfor %}
+{% endblock content %}
