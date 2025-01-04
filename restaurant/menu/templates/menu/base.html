@@ -38,9 +38,19 @@
           <li><a href="{% url 'menu:random_dish' %}">Случайное блюдо</a></li>
            <li><a href="{% url 'menu:top_5' %}"> Топ-5 блюд</a></li>
 
-    </ul>
+           </ul>
   </div>
-       <li class="nav-item">
+         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <div class="dropdown">
+            <a href="#" class="btn btn-info dropdown-toggle" data-toggle="dropdown">Аналитика <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<
+                <li><a href="{% url 'menu:top_5_by_sum' %}">Топ-5 клиентов по сумме заказов</a></li>
+                <li><a href="{% url 'menu:top_5_by_quantity' %}">Топ-5 клиентов по количеству заказов</a></li>
+                <li><a href="{% url 'menu:top_5_lentil_soup' %}">Топ-5 клиентов, которые заказывали чечевичный суп</a></li>
+              </div>
+              <li class="nav-item">
                 <a class="nav-link" href="{% url 'menu:information' %}">Контакты</a>
             </li>
 
@@ -67,16 +77,16 @@
                 <a class="nav-link" href="{% url 'menu:all_dishes' %}">Блюда</a>
              </li>
 
-             {% if user.is_staff == 1 %}
+           {% if user.is_staff == 1 %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'menu:all_orders' %}">Заказы</a>
+               <a class="nav-link" href="{% url 'menu:all_orders' %}">Заказы</a>
              </li>
 
 
                 {% endif%}
 
-        </ul>
-    </div>
+       </ul>
+   </div>
 </nav>
 
 <main role="main" class="container">

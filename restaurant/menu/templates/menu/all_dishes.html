@@ -1,4 +1,5 @@
 {% extends 'menu/base.html' %}
+{% load static %}
 
 {% block title_name %}
 Блюда
@@ -24,6 +25,10 @@
 <br><p>Название блюда: {{ dish.dish_name }}</p>
 <p>Описание блюда: {{ dish.dish_description }}</p>
 <p>Цена блюда: {{ dish.price }}</p>
+{% if dish.image %}
+
+<img src="{{ dish.image.url }}" alt="{{ dish.dish_name }}">
+{% endif %}
 {% endfor %}
 
 

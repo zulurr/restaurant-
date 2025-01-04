@@ -1,0 +1,16 @@
+{% extends 'menu/base.html' %}
+
+{% block title_name %} {% endblock%}
+
+{% block content %}
+{% for order in zakaz %}
+<br><br>
+<p>Блюдо: {{ order.menu_item.dish_name}} из категории {{ order.menu_item.category_id.name_category }}</p>
+<p>Сумма за 1 блюдо: {{ order.menu_item.price}}</p>
+<p>Количество: {{ order.quantity }}</p>
+
+<p>Итоговая сумма: {{ order.total_sum }}</p>
+
+
+{% endfor %}
+{% endblock %}

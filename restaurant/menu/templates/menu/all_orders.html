@@ -1,34 +1,47 @@
 {% extends 'menu/base.html' %}
 
 {% block title_name %}
-Заказы
+Все заказы
 {% endblock %}
 
 {% block content %}
 <br>
 <form method="get">
     <select name="sort" onchange="this.form.submit()">
-        <option value="pk">Сортировать по первичному ключу</option>
+        <option value="pk">Сортировать по id</option>
         <option value="created_at_date">Сортировать по дате заказа</option>
         <option value="sum_order">Сортировать по сумме заказа</option>
     </select>
 </form>
 
-<br>
-<a href="?sort=pk">Сортировать по первичному ключу</a>
-<a href="?sort=created_at_date">Сортировать по дате заказа</a>
-<a href="?sort=sum_order">Сортировать по сумме заказа</a>
-<br>
-{% for dish in result_all_orders %}
+{% for order in ord %}
 
-<br><p>Номер заказа: {{ dish.id }}</p>
-<p>Дата заказа: {{ dish.created_at_date }}</p>
-<p>Сумма заказа: {{ dish.sum_order }}</p>
+<br><p>Дата заказа: {{ order.created_at_date }}</p>
+<p>Сумма заказа: {{ order.sum_order}}</p>
+
 {% endfor %}
+       {% for order in page_obj %}
+        <p>Дата: <a href="{% url 'menu:order' order.id %}">{{ order.created_at_date }}</a></p>
+        <p>ID: {{ order.id }}</p>
+        <p>Сумма заказа: {{ order.sum_order }}</p>
+       {% endfor %}
 
+   <div class="pagination">
+       <span class="step-links">
+           {% if page_obj.has_previous %}
+               <a href="?page=1&sort={{ sort_by }}">&laquo; Первая</a>
+               <a href="?page={{ page_obj.previous_page_number }}&sort={{ sort_by }}">Предыдущая</a>
+           {% endif %}
 
-<br><br><br>
-{{ res}}
-<br><br><br>
+           <span class="current">
+               Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }} |
+           </span>
 
+           {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&sort={{ sort_by }}">Следующая</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}&sort={{ sort_by }}">Последняя &raquo;</a>
+           {% endif %}
+       </span>
+   </div>
 {% endblock %}
+
