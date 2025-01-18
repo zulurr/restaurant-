@@ -1,0 +1,12 @@
+{% extends 'menu/base.html' %}
+
+{% block title_name %} {% endblock%}
+
+{% block content %}
+
+{% for i in top %}
+<h1> Клиент: {{i.username}}  </h1>
+<p>Сумма всех заказов: {{i.quantity_by_user}}</p> <br>
+{% endfor %}
+
+{% endblock %}

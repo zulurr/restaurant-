@@ -20,9 +20,9 @@ urlpatterns = [
     path('all_orders/', views.all_orders, name='all_orders'),
     path('order/<int:order_id>/', views.order, name='order'),
     path('analitics/', views.analitics, name='analitics'),
-    path('top_5_by_sum/', views.top_5_by_sum, name='top_5_by_sum'),
-    path('top_5_by_quantity/', views.top_5_by_quantity, name='top_5_by_quantity'),
-    path('top_5_lentil_soup/', views.top_5_lentil_soup, name='top_5_lentil_soup')
+    path('clients_by_sum/', views.clients_by_sum, name='clients_by_sum'),
+    path('clients_by_quantity/', views.clients_by_quantity, name='clients_by_quantity'),
+    path('clients_lentil_soup/', views.clients_lentil_soup, name='clients_lentil_soup')
 ]
 
 

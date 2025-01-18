@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
 
+
 from .models import User
 
 class UserCreationForm(forms.ModelForm):
@@ -14,13 +15,14 @@ class UserCreationForm(forms.ModelForm):
                   'username': 'Введите имя пользователя',
                   'email': 'Введите почту'}
 
+
 class UserLoginForm(forms.Form):
 
     phone_number = forms.CharField(
         label='Введите номер телефона',
         max_length=15)
 
-    password = forms.CharField(label='Введите пароль')
+    password = forms.CharField(label='Введите пароль', widget=forms.PasswordInput)
 
 class UserProfileChangeForm(forms.Form):
     phone_number = forms.CharField(

@@ -55,10 +55,6 @@ def beverages(request):
     bs = Menu.objects.filter(category_id_id__name_category='Напитки')
     return render(request, 'menu/beverages.html', context={'bs': bs})
 
-# def random_dish(request):
-#     count = Menu.objects.all().values('id').count()
-#     number = random.randint(1, count)
-#     return redirect('menu:dish', dish_id=number)
 
 def random_dish(request):
     count = Menu.objects.all().aggregate(Count('dish_name'))
@@ -83,13 +79,7 @@ def all_dishes(request):
     result_all_dishes = Menu.objects.all().order_by(sort_by)
     return render(request, 'menu/all_dishes.html', context={'result_all_dishes': result_all_dishes, 'res': res})
 
-# def all_orders(request):
-#     sort_by = request.GET.get('sort', 'pk')
-#     res = request.GET
-#     if sort_by not in ['created_at_date', 'sum_order']:
-#         sort_by = 'pk'
-#     result_all_orders = SumOrder.objects.all().order_by(sort_by)
-#     return render(request, 'menu/all_orders.html', context={'result_all_orders': result_all_orders, 'res': res})
+
 
 def all_orders(request):
     ord = SumOrder.objects.values('sum_order', 'id', 'created_at_date').annotate(
@@ -99,12 +89,10 @@ def all_orders(request):
                     When(sum_order__gt=20000, then=(ExpressionWrapper(F('sum_order') - F('sum_order') * 0.2, IntegerField()))),
                         When(sum_order__gt=10000, then=(ExpressionWrapper(F('sum_order') - F('sum_order') * 0.1, IntegerField()))),
                         default=Value(0)))
-    # ord = SumOrder.objects.values('sum_order').annotate(
-    #     discount=Case(When(sum_order__gt=20000, then=Value(20)),
-    #               When(sum_order__gt=10000, then=Value(10)),
-    #               default=Value(0))).annotate(new_sum_order=F('sum_order') * Value(1 - (F('discount')) * 0.01))
+
 
     return render(request, 'menu/all_orders.html', context={'ord': ord})
+
 
 def order(request, order_id):
     zakaz = SumDish.objects.filter(order_id=order_id).select_related('menu_item').select_related('category_id')
@@ -131,7 +119,7 @@ def all_orders(request):
 def analitics(request):
     return render(request, 'menu/analitics.html')
 
-def top_5_by_sum(request):
+def clients_by_sum(request):
     top = SumOrder.objects.values('user_id').annotate(sum_by_user=Sum('sum_order')).order_by('-sum_by_user')
     top = list(top)
     print(top)
@@ -144,26 +132,32 @@ def top_5_by_sum(request):
                 m['username'] = n['username']
                 m['phone_number'] = n['phone_number']
 
-    return render(request, 'menu/top_5_by_sum.html', context={'top': top})
+    return render(request, 'menu/clients_by_sum.html', context={'top': top})
 
-def top_5_by_quantity(request):
-    top = SumOrder.objects.values('user_id').annotate(quantity_by_user=Count('id'))
+def clients_by_quantity(request):
+    top = SumOrder.objects.values('user_id').annotate(quantity_by_user=Count('id')).order_by('-quantity_by_user')
     top = list(top)
     print(top)
-    t = []
-    for i in top:
-        t.append(i['user_id'])
-    users = SumOrder.objects.filter(id__in=t)
-    return render(request, 'menu/top_5_by_quantity.html', context={'users': users, 'top': top, 't': t})
 
-def top_5_lentil_soup(request):
-    # top = SumOrder.objects.select_related('id').values('user_id').annotate(quantity_by_user=Count('user_id')).filter(menu_item_id=4)
-    # top = SumOrder.objects.select_related('user_id').aggregate(quantity_by_user=Count('user_id'))
-    top = SumOrder.objects.select_related('id').values('user_id').annotate(quantity_by_user=Count('user_id'))
+    users = User.objects.values('username', 'phone_number', 'id')
+    users = list(users)
+    for m in top:
+        for n in users:
+            if m['user_id'] == n['id']:
+                m['username'] = n['username']
+                m['phone_number'] = n['phone_number']
+    return render(request, 'menu/clients_by_quantity.html', context={'top': top})
+
+def clients_lentil_soup(request):
+    top = SumDish.objects.select_related('order_id').select_related('menu_item_id').values('id', 'quantity','order_id','menu_item_id').annotate(quantity_by_user=Count('id')).order_by('-quantity_by_user')
     top = list(top)
     print(top)
-    t = []
-    for i in top:
-        t.append(i['user_id'])
-    users = SumOrder.objects.filter(id__in=t)
-    return render(request, 'menu/top_5_lentil_soup.html', context={ 'users': users, 'top': top, 't': t})
+
+    users = User.objects.values('username', 'phone_number', 'id')
+    users = list(users)
+    for m in top:
+        for n in users:
+            if m['user_id'] == n['id']:
+                m['username'] = n['username']
+                m['phone_number'] = n['phone_number']
+    return render(request, 'menu/clients_lentil_soup.html', context={'top': top})

@@ -11,7 +11,7 @@
 <nav class="navbar navbar-default" role="navigation">
     <div class="container-fluid">
       <div class="navbar-header">
-        <a class="navbar-brand" href="#">Istanbul restaurant</a>
+        <a class="navbar-brand" href="{% url 'menu:main' %}">Istanbul restaurant</a>
       </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
         <br>
@@ -39,17 +39,23 @@
            <li><a href="{% url 'menu:top_5' %}"> Топ-5 блюд</a></li>
 
            </ul>
+
+
   </div>
          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+             {% if user.is_staff == 1 %}
             <ul class="nav navbar-nav">
                 <div class="dropdown">
             <a href="#" class="btn btn-info dropdown-toggle" data-toggle="dropdown">Аналитика <b class="caret"></b></a>
             <ul class="dropdown-menu">
 <
-                <li><a href="{% url 'menu:top_5_by_sum' %}">Топ-5 клиентов по сумме заказов</a></li>
-                <li><a href="{% url 'menu:top_5_by_quantity' %}">Топ-5 клиентов по количеству заказов</a></li>
-                <li><a href="{% url 'menu:top_5_lentil_soup' %}">Топ-5 клиентов, которые заказывали чечевичный суп</a></li>
+                <li><a href="{% url 'menu:clients_by_sum' %}">Клиенты по сумме заказов </a></li>
+                <li><a href="{% url 'menu:clients_by_quantity' %}">Клиенты по количеству заказов</a></li>
+                <li><a href="{% url 'menu:clients_lentil_soup' %}">Клиенты, которые заказывали чечевичный суп</a></li>
               </div>
+
+                {% endif%}
+
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'menu:information' %}">Контакты</a>
             </li>
@@ -71,11 +77,14 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'user:register' %}">Регистрация</a>
             </li>
+
             {% endif %}
+
 
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'menu:all_dishes' %}">Блюда</a>
              </li>
+
 
            {% if user.is_staff == 1 %}
             <li class="nav-item">

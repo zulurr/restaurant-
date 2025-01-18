@@ -36,6 +36,11 @@ class SumOrder(models.Model):
     def __str__(self):
         return f'{self.created_at_date}'
 
+    class Meta:
+        verbose_name = 'Сумма заказа'
+        verbose_name_plural = 'Сумма заказа'
+
+
 class SumDish(models.Model):
     order = models.ForeignKey(SumOrder, on_delete=models.CASCADE)
     menu_item = models.ForeignKey(Menu, on_delete=models.CASCADE)

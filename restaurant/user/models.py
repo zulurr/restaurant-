@@ -11,6 +11,10 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+    class Meta:
+        verbose_name = 'Пользователи'
+        verbose_name_plural = 'Пользователи'
+
     def create_superuser(self, phone_number, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
@@ -20,6 +24,11 @@ class CustomUserManager(BaseUserManager):
 class User(AbstractUser):
     phone_number = models.CharField(max_length=15, unique=True)
     email = models.CharField(max_length=50, unique=True)
+
+
+    class Meta:
+        verbose_name = 'Пользователи'
+        verbose_name_plural = 'Пользователи'
 
 
     USERNAME_FIELD = 'phone_number'
