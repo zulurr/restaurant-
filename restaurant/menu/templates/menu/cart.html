@@ -1,0 +1,85 @@
+{% extends 'menu/base.html' %}
+
+{% block title_name %} Корзина {% endblock%}
+
+{% block content %}
+<style>
+    .cart-container {
+        border: 1px solid #ccc; /* Обводка корзины */
+        border-radius: 8px; /* Закругление углов */
+        padding: 16px; /* Внутренние отступы */
+        background-color: #f9f9f9; /* Цвет фона */
+        margin-bottom: 20px; /* Отступ снизу */
+    }
+
+    .cart-item {
+        display: flex; /* Используем flexbox для выравнивания */
+        justify-content: space-between; /* Распределяем элементы по краям */
+        align-items: center; /* Вертикальное выравнивание */
+        margin: 10px 0; /* Отступы между элементами */
+        padding: 10px; /* Внутренние отступы */
+        border: 1px solid #ddd; /* Обводка для каждого элемента */
+        border-radius: 5px; /* Закругление углов элементов */
+        background-color: #fff; /* Цвет фона для элементов */
+    }
+
+    .cart-item a {
+        text-decoration: none; /* Убираем подчеркивание у ссылок */
+        color: #007bff; /* Цвет ссылок */
+        font-weight: bold; /* Жирный шрифт */
+        padding: 5px 10px; /* Отступы для ссылок */
+        border: 1px solid #007bff; /* Обводка для кнопок */
+        border-radius: 5px; /* Закругление углов кнопок */
+        transition: background-color 0.3s; /* Плавный переход для фона */
+    }
+
+    .cart-item a:hover {
+        background-color: #007bff; /* Цвет фона при наведении */
+        color: #fff; /* Цвет текста при наведении */
+    }
+
+    .total-price {
+        font-size: 1.5em; /* Увеличенный размер шрифта для суммы */
+        color: #d9534f; /* Цвет для суммы */
+        font-weight: bold; /* Жирный шрифт для суммы */
+        margin-top: 20px; /* Отступ сверху */
+    }
+
+    .clear-cart-button {
+        display: inline-block; /* Для правильного отображения кнопки */
+        padding: 10px 20px; /* Отступы для кнопки */
+        background-color: #d9534f; /* Цвет фона для кнопки */
+        color: #fff; /* Цвет текста для кнопки */
+        font-weight: bold; /* Жирный шрифт */
+        border: none; /* Убираем обводку */
+        border-radius: 5px; /* Закругление углов кнопки */
+        text-decoration: none; /* Убираем подчеркивание */
+        transition: background-color 0.3s; /* Плавный переход для фона */
+    }
+
+    .clear-cart-button:hover {
+        background-color: #c9302c; /* Цвет фона при наведении */
+    }
+</style>
+
+<div class="cart-container">
+    {% if not cart %}
+        <h1>Ваша корзина пуста!</h1>
+    {% else %}
+        <h1>Ваша корзина:</h1>
+        {% for menu_id, item in cart.items %}
+            <div class="cart-item">
+                <span>{{ item.dish_name }}</span>
+                <span>
+                    <a href="{% url 'menu:add_item_in_cart' menu_id %}">+</a>
+                    {{ item.count }}
+                    <a href="{% url 'menu:remove_item_from_cart' menu_id %}">-</a>
+                </span>
+            </div>
+        {% endfor %}
+        <h3 class="total-price">Итоговая сумма: {{ total_price }}</h3>
+    {% endif %}
+</div>
+
+<h2><a class="clear-cart-button" href="{% url 'menu:clear_cart' %}">Очистить корзину!</a></h2>
+{% endblock %}

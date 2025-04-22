@@ -6,34 +6,66 @@
 {% endblock %}
 
 {% block content %}
-<br>
-<form method="get">
-    <select name="sort" onchange="this.form.submit()">
-        <option value="pk">Сортировать по первичному ключу</option>
-        <option value="dish_name">Сортировать по названию блюда</option>
-        <option value="price">Сортировать по стоимости</option>
-    </select>
-</form>
+<style>
+    .dish-container {
+        border: 1px solid #ccc; /* Обводка блока */
+        border-radius: 8px; /* Закругление углов */
+        padding: 16px; /* Внутренние отступы */
+        margin: 10px; /* Внешние отступы между блоками */
+        display: flex; /* Используем flexbox для выравнивания */
+        flex-direction: column; /* Вертикальное выравнивание */
+        align-items: center; /* Центрирование содержимого */
+        text-align: center; /* Центрирование текста */
+        background-color: #f9f9f9; /* Цвет фона блока */
+    }
+
+    .dish-image {
+        width: 200px; /* Ширина изображения */
+        height: 200px; /* Высота изображения */
+        object-fit: cover; /* Обеспечивает обрезку изображения для заполнения блока */
+        border-radius: 4px; /* Закругление углов изображения */
+        margin-bottom: 10px; /* Отступ снизу */
+    }
+
+    .sort-options {
+        margin-bottom: 20px; /* Отступ под селектор сортировки */
+    }
+</style>
 
 <br>
-<a href="?sort=pk">Сортировать по первичному ключу</a>
-<a href="?sort=dish_name">Сортировать по названию блюда</a>
-<a href="?sort=price">Сортировать по стоимости</a>
+<div class="sort-options">
+    <form method="get">
+        <select name="sort" onchange="this.form.submit()">
+            <option value="pk">Сортировать по первичному ключу</option>
+            <option value="dish_name">Сортировать по названию блюда</option>
+            <option value="price">Сортировать по стоимости</option>
+        </select>
+    </form>
+
+    <br>
+    <a href="?sort=pk">Сортировать по первичному ключу</a>
+    <a href="?sort=dish_name">Сортировать по названию блюда</a>
+    <a href="?sort=price">Сортировать по стоимости</a>
+</div>
+
 <br>
-{% for dish in result_all_dishes %}
-
-<br><p>Название блюда: {{ dish.dish_name }}</p>
-<p>Описание блюда: {{ dish.dish_description }}</p>
-<p>Цена блюда: {{ dish.price }}</p>
-{% if dish.image %}
-
-<img src="{{ dish.image.url }}" alt="{{ dish.dish_name }}">
-{% endif %}
-{% endfor %}
-
-
-<br><br><br>
-
-<br><br><br>
+<div class="dishes-list">
+    {% for dish in result_all_dishes %}
+        <div class="dish-container">
+            <p>Название блюда: <a href="{% url 'menu:dish' dish.id %}">{{ dish.dish_name }}</a></p>
+            <p>Описание блюда: {{ dish.dish_description }}</p>
+            <p>Цена блюда: {{ dish.price }}</p>
+            <p><a href="{% url 'menu:add_cart' dish.id %}">Добавить в корзину</a></p>
+            {% if dish.image %}
+                <img class="dish-image" src="{{ dish.image.url }}" alt="{{ dish.dish_name }}">
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
 
 {% endblock %}
+
+
+
+
+

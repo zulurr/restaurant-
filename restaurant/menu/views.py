@@ -1,15 +1,16 @@
 import random
-
+from rest_framework import viewsets
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.db.models import Count, Sum, Case, When, Value, ExpressionWrapper, F, IntegerField, DecimalField
+from django.db.models import Count, Sum, Case, When, Value, ExpressionWrapper, F, IntegerField, DecimalField, Max
 from django.shortcuts import render, redirect
 
 from .models import Menu, Category, SumDish, SumOrder
-from user.models import User
 
+from .serializers import MenuSerializer, CategorySerializer, SumOrderSerializer
 
 def main(request):
-    return render(request, 'menu/main.html')
+    queryset = SumOrder.objects.annotate(sum_by_user=Sum('sum_order')).order_by('-sum_by_user')
+    return render(request, 'menu/main.html', context={'queryset':queryset})
 
 
 def information(request):
@@ -149,15 +150,133 @@ def clients_by_quantity(request):
     return render(request, 'menu/clients_by_quantity.html', context={'top': top})
 
 def clients_lentil_soup(request):
-    top = SumDish.objects.select_related('order_id').select_related('menu_item_id').values('id', 'quantity','order_id','menu_item_id').annotate(quantity_by_user=Count('id')).order_by('-quantity_by_user')
+    top = (SumDish.objects
+           .select_related('order__user')
+           .filter(menu_item=4)
+           .values('order__user__id')  # Группировка по ID пользователя
+           .annotate(total_quantity=Sum('quantity'))  # Суммирование поля quantity
+           )
     top = list(top)
-    print(top)
+
+
+    new = (SumOrder.objects.prefetch_related('sumdish')
+           .select_related('menu_item').filter(sumdish__menu_item=4)
+           .values('user')
+           .annotate(sum_soup=Sum('sumdish__quantity')))
+    new = list(new)
+
 
     users = User.objects.values('username', 'phone_number', 'id')
     users = list(users)
+
     for m in top:
         for n in users:
-            if m['user_id'] == n['id']:
+            if m['order__user__id'] == n['id']:
                 m['username'] = n['username']
                 m['phone_number'] = n['phone_number']
-    return render(request, 'menu/clients_lentil_soup.html', context={'top': top})
+    return render(request, 'menu/clients_lentil_soup.html', context={'top': top, 'new': new})
+
+
+def add_cart(request, menu_id): # Добавляет элемент в корзину покупок.
+# request: объект запроса, содержащий данные о текущем запросе пользователя.
+# menu_id: идентификатор блюда, которое пользователь хочет добавить в корзину.
+
+
+    cart = request.session.get('cart', {})
+#  Получает текущую корзину из сессии пользователя (или создает пустую, если корзина не существует).
+    if str(menu_id) in cart:
+        cart[str(menu_id)]['count'] += 1
+        # Проверяет, есть ли уже это блюдо в корзине (по его идентификатору).
+        # Если блюдо уже в корзине, увеличивает его количество (count) на 1.
+    else:
+        item = Menu.objects.get(id=menu_id)
+        cart[menu_id] = {
+            'dish_name': item.dish_name,
+            'price': str(item.price),
+            'count': 1
+        }
+    request.session['cart'] = cart
+# Если блюда нет в корзине, извлекает информацию о нем из базы данных (по menu_id) и
+# добавляет его в корзину с начальным количеством 1.
+
+    return redirect('menu:cart')
+
+
+
+
+
+def cart_view(request): # Отображает содержимое корзины покупок пользователю.
+    # request: объект запроса.
+    cart = request.session.get('cart', {}) # Получает текущую корзину из сессии.
+    total_price = 0
+    # Инициализирует переменную total_price для подсчета общей стоимости всех товаров в корзине.
+
+    for item in cart.values():
+        total_price += float(item['price']) * item['count']
+#  Проходит по всем элементам корзины и вычисляет общую стоимость,
+    #  умножая цену каждого блюда на его количество (count).
+
+    return render(request, 'menu/cart.html', context={'cart': cart, 'total_price': total_price})
+# Возвращает HTML-шаблон (menu/cart.html), передавая в контекст данные о корзине и общей стоимости.
+
+
+def clear_cart(request): # Очищает корзину покупок.
+    if 'cart' in request.session: #  Проверяет, существует ли корзина в сессии пользователя.
+        del request.session['cart'] # Если да, удаляет ее из сессии.
+
+    return redirect('menu:all_dishes')
+
+def add_item_in_cart(request, menu_id):
+    cart = request.session.get('cart', {})
+
+    if str(menu_id) in cart:
+        cart[str(menu_id)]['count'] += 1
+
+
+    request.session['cart'] = cart
+
+    return redirect('menu:cart')
+
+def remove_item_from_cart(request, menu_id):
+    cart = request.session.get('cart', {})
+
+    if str(menu_id) in cart:
+        cart[str(menu_id)]['count'] -= 1
+        if cart[str(menu_id)]['count'] < 1:
+            del cart[str(menu_id)]
+
+
+
+    request.session['cart'] = cart
+
+    return redirect('menu:cart')
+
+class MenuViewSet(viewsets.ModelViewSet):
+    queryset = Menu.objects.all()
+    serializer_class = MenuSerializer
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+class SumOrderViewSet(viewsets.ModelViewSet):
+    queryset = SumOrder.objects.all()
+    serializer_class = SumOrderSerializer
+
+
+
+class TopByPriceViewSet(viewsets.ModelViewSet):
+    queryset = Menu.objects.order_by('-price')[:10]
+    serializer_class = MenuSerializer
+
+class TopByMainCoursesViewSet(viewsets.ModelViewSet):
+    queryset = Menu.objects.select_related('category_id').filter(category_id=3).order_by('-price')[:10]
+    serializer_class = MenuSerializer
+
+# class UserSumOrderViewSet(viewsets.ModelViewSet):
+#     queryset = SumOrder.objects.values('user').annotate(sum_by_user=Sum('sum_order')).order_by('-sum_by_user')
+#     serializer_class = UserSumOrderSerializer
+
+
+class UserViewSet:
+    pass

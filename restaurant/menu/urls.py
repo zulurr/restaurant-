@@ -1,8 +1,21 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 from django.contrib import admin
+from rest_framework.routers import DefaultRouter
+from .views import MenuViewSet, CategoryViewSet, TopByPriceViewSet, TopByMainCoursesViewSet, SumOrderViewSet
+from user.views import UserViewSet, UserSumOrderViewSet
+
+router = DefaultRouter()
+router.register(r'menu', MenuViewSet, basename='menu')
+router.register(r'top_10_by_price', TopByPriceViewSet, basename='top_10_by_price' )
+router.register(r'main_courses', TopByMainCoursesViewSet, basename='main_courses' )
+router.register(r'sum_order', SumOrderViewSet, basename='sum_order' )
+router.register(r'users', UserViewSet, basename='users' )
+router.register(r'sum_by_user', UserSumOrderViewSet, basename='sum_by_user' )
+router.register(r'categories', CategoryViewSet, basename='categories')
 app_name = 'menu'
 urlpatterns = [
+    path('api/', include(router.urls)),
     path('', views.main, name='main'),
     path('information/', views.information, name='information'),
     path('categories/', views.categories, name='categories'),
@@ -22,7 +35,13 @@ urlpatterns = [
     path('analitics/', views.analitics, name='analitics'),
     path('clients_by_sum/', views.clients_by_sum, name='clients_by_sum'),
     path('clients_by_quantity/', views.clients_by_quantity, name='clients_by_quantity'),
-    path('clients_lentil_soup/', views.clients_lentil_soup, name='clients_lentil_soup')
+    path('clients_lentil_soup/', views.clients_lentil_soup, name='clients_lentil_soup'),
+    path('cart/', views.cart_view, name='cart'),
+    path('add_cart/<int:menu_id>', views.add_cart, name='add_cart'),
+    path('clear_cart/', views.clear_cart, name='clear_cart'),
+    path('add_item_in_cart/<int:menu_id>', views.add_item_in_cart, name='add_item_in_cart'),
+    path('remove_item_from_cart/<int:menu_id>', views.remove_item_from_cart, name='remove_item_from_cart'),
+
 ]
 
 

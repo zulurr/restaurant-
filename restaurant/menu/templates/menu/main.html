@@ -2,6 +2,9 @@
 
 {% block title_name %} Добро пожаловать в ресторан Istanbul {% endblock%}
 
-{% block content %}
 
+{% block content %}
+{% for i in queryset %}
+{{i.user}}
+{%endfor%}
 {% endblock content %}

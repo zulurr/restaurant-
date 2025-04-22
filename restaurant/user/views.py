@@ -1,12 +1,16 @@
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.models import User
+from django.db.models import Sum
 from django.shortcuts import render, redirect
+from rest_framework import viewsets
 
 # from restaurant.user.forms import UserLoginForm, UserCreationForm
 
 
 from .forms import UserCreationForm, UserLoginForm, UserProfileChangeForm, CustomPasswordChangeForm
 from .models import User
+from user.serializers import UserSerializer, UserSumOrderSerializer
+from menu.models import SumOrder
 
 
 def login_view(request):
@@ -75,3 +79,14 @@ def profile_change_password(request, user_id):
         form = CustomPasswordChangeForm(user=request.user)
 
     return render(request, 'user/profile_change_password.html', {'form': form})
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+class UserSumOrderViewSet(viewsets.ModelViewSet):
+    queryset = SumOrder.objects.values('user').annotate(sum_by_user=Sum('sum_order')).order_by('-sum_by_user')
+    serializer_class = UserSumOrderSerializer
+
+
