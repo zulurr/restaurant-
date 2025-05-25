@@ -2,7 +2,8 @@ from django.urls import path, include
 from . import views
 from django.contrib import admin
 from rest_framework.routers import DefaultRouter
-from .views import MenuViewSet, CategoryViewSet, TopByPriceViewSet, TopByMainCoursesViewSet, SumOrderViewSet
+from .views import MenuViewSet, CategoryViewSet, TopByPriceViewSet, TopByMainCoursesViewSet, SumOrderViewSet, \
+    BreakfastsViewSet, SoupsViewSet, BeveragesViewSet, DessertsViewSet, StartersViewSet
 from user.views import UserViewSet, UserSumOrderViewSet
 
 router = DefaultRouter()
@@ -13,9 +14,19 @@ router.register(r'sum_order', SumOrderViewSet, basename='sum_order' )
 router.register(r'users', UserViewSet, basename='users' )
 router.register(r'sum_by_user', UserSumOrderViewSet, basename='sum_by_user' )
 router.register(r'categories', CategoryViewSet, basename='categories')
+router.register(r'breakfasts', BreakfastsViewSet, basename='breakfasts')
+router.register(r'soups', SoupsViewSet, basename='soups')
+router.register(r'beverages', BeveragesViewSet, basename='beverages')
+router.register(r'desserts', DessertsViewSet, basename='desserts')
+router.register(r'starters', StartersViewSet, basename='starters')
+
 app_name = 'menu'
 urlpatterns = [
     path('api/', include(router.urls)),
+
+    path('api/auth/', views.AuthView.as_view(), name='auth'),
+    path('api/updateuser/', views.UpdateUserView.as_view(), name='updateuser'),
+
     path('', views.main, name='main'),
     path('information/', views.information, name='information'),
     path('categories/', views.categories, name='categories'),

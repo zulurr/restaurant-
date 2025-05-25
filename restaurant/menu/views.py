@@ -1,12 +1,19 @@
 import random
-from rest_framework import viewsets
+
+from django.db.migrations import serializer
+from rest_framework import viewsets, generics
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Count, Sum, Case, When, Value, ExpressionWrapper, F, IntegerField, DecimalField, Max
 from django.shortcuts import render, redirect
-
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from .models import Menu, Category, SumDish, SumOrder
 
-from .serializers import MenuSerializer, CategorySerializer, SumOrderSerializer
+from .serializers import MenuSerializer, CategorySerializer, SumOrderSerializer, AuthSerializer
+from user.models import User
+from .serializers import UserSerializer
+
 
 def main(request):
     queryset = SumOrder.objects.annotate(sum_by_user=Sum('sum_order')).order_by('-sum_by_user')
@@ -270,7 +277,7 @@ class TopByPriceViewSet(viewsets.ModelViewSet):
     serializer_class = MenuSerializer
 
 class TopByMainCoursesViewSet(viewsets.ModelViewSet):
-    queryset = Menu.objects.select_related('category_id').filter(category_id=3).order_by('-price')[:10]
+    queryset = Menu.objects.select_related('category_id').filter(category_id=3)
     serializer_class = MenuSerializer
 
 # class UserSumOrderViewSet(viewsets.ModelViewSet):
@@ -280,3 +287,43 @@ class TopByMainCoursesViewSet(viewsets.ModelViewSet):
 
 class UserViewSet:
     pass
+
+class BreakfastsViewSet(viewsets.ModelViewSet):
+    queryset = Menu.objects.select_related('category_id').filter(category_id=4)
+    serializer_class = MenuSerializer
+
+class SoupsViewSet(viewsets.ModelViewSet):
+    queryset = Menu.objects.select_related('category_id').filter(category_id=1)
+    serializer_class = MenuSerializer
+
+class BeveragesViewSet(viewsets.ModelViewSet):
+    queryset = Menu.objects.select_related('category_id').filter(category_id=6)
+    serializer_class = MenuSerializer
+
+class DessertsViewSet(viewsets.ModelViewSet):
+    queryset = Menu.objects.select_related('category_id').filter(category_id=5)
+    serializer_class = MenuSerializer
+
+class StartersViewSet(viewsets.ModelViewSet):
+    queryset = Menu.objects.select_related('category_id').filter(category_id=2)
+    serializer_class = MenuSerializer
+
+class AuthView(generics.CreateAPIView):
+    serializer_class = AuthSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key})
+
+
+
+class UpdateUserView(generics.UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
